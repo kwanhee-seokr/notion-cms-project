@@ -10,14 +10,14 @@ Notion CMS 기반으로 네이버 스마트스토어 **[Jangs 리빙](https://sm
 
 ## 기술 스택
 
-| 분류 | 기술 |
-|------|------|
-| **Framework** | Next.js 15 (App Router + Turbopack) |
-| **Language** | TypeScript 5, React 19 |
-| **CMS** | Notion API (@notionhq/client) |
-| **Styling** | TailwindCSS v4 + shadcn/ui (new-york) |
-| **Icons** | Lucide React |
-| **Deployment** | Vercel |
+| 분류           | 기술                                  |
+| -------------- | ------------------------------------- |
+| **Framework**  | Next.js 15 (App Router + Turbopack)   |
+| **Language**   | TypeScript 5, React 19                |
+| **CMS**        | Notion API (@notionhq/client)         |
+| **Styling**    | TailwindCSS v4 + shadcn/ui (new-york) |
+| **Icons**      | Lucide React                          |
+| **Deployment** | Vercel                                |
 
 ## 주요 기능
 
@@ -79,10 +79,10 @@ notion-cms-project/
 
 ## 환경 변수
 
-| 변수명 | 설명 |
-|--------|------|
-| `NOTION_API_KEY` | Notion Internal Integration Token |
-| `NOTION_DATABASE_ID` | 상품 데이터베이스 ID |
+| 변수명               | 설명                              |
+| -------------------- | --------------------------------- |
+| `NOTION_API_KEY`     | Notion Internal Integration Token |
+| `NOTION_DATABASE_ID` | 상품 데이터베이스 ID              |
 
 ## 문서
 

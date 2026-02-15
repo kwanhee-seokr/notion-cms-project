@@ -25,7 +25,6 @@ export async function getNotionPage(pageId: string) {
 let cachedDataSourceId: string | null = null
 
 export async function getDataSourceId(): Promise<string> {
-  // 이미 캐싱된 경우 바로 반환
   if (cachedDataSourceId) {
     return cachedDataSourceId
   }
@@ -35,7 +34,6 @@ export async function getDataSourceId(): Promise<string> {
       database_id: env.NOTION_DATABASE_ID,
     })
 
-    // v5에서 database는 data_sources 배열을 반환
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const dataSources = (response as any).data_sources
 
@@ -43,7 +41,6 @@ export async function getDataSourceId(): Promise<string> {
       throw new Error('데이터베이스에 data source가 없습니다')
     }
 
-    // 첫 번째 data_source 사용 (일반적인 케이스)
     const dataSourceId = dataSources[0].id
     cachedDataSourceId = dataSourceId
     logger.info('Data Source ID 캐싱 완료', {
@@ -56,6 +53,33 @@ export async function getDataSourceId(): Promise<string> {
       databaseId: env.NOTION_DATABASE_ID,
       error,
     })
+    throw error
+  }
+}
+
+/**
+ * 페이지의 자식 블록(본문 콘텐츠) 조회
+ */
+export async function getPageBlocks(pageId: string) {
+  try {
+    const blocks = []
+    let cursor: string | undefined = undefined
+
+    do {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response: any = await notion.blocks.children.list({
+        block_id: pageId,
+        start_cursor: cursor,
+        page_size: 100,
+      })
+
+      blocks.push(...response.results)
+      cursor = response.has_more ? response.next_cursor : undefined
+    } while (cursor)
+
+    return blocks
+  } catch (error) {
+    logger.error('페이지 블록 조회 실패', { pageId })
     throw error
   }
 }

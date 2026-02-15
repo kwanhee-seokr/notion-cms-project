@@ -1,45 +1,72 @@
-# 🤖 Claude Code 개발 지침
+# Claude Code 개발 지침
 
-**노션 기반 견적서 관리 시스템 MVP** - 노션을 데이터베이스로 활용하여 견적서를 관리하고, 클라이언트가 웹에서 조회 및 PDF 다운로드할 수 있는 시스템
+**Jangs 리빙 스마트스토어 홍보 사이트 MVP**
 
-📋 상세 프로젝트 요구사항은 @/docs/PRD.md 참조
+- Notion CMS 기반으로 네이버 스마트스토어 'Jangs 리빙'의 상품을 카테고리별 Dashboard 형태로 홍보하고, 방문자를 스마트스토어 구매 페이지로 유도하는 웹사이트
 
-## 🛠️ 핵심 기술 스택
+## Project Context
+
+- PRD 문서: @docs/PRD.md
+- 개발 로드맵: @docs/roadmaps/ROADMAP.md
+
+## 핵심 기술 스택
 
 - **Framework**: Next.js 15.5.3 (App Router + Turbopack)
 - **Runtime**: React 19.1.0 + TypeScript 5
 - **Styling**: TailwindCSS v4 + shadcn/ui (new-york style)
-- **Forms**: React Hook Form + Zod + Server Actions
+- **Validation**: Zod
 - **UI Components**: Radix UI + Lucide Icons
 - **External API**: @notionhq/client (Notion API SDK)
 - **Development**: ESLint + Prettier + Husky + lint-staged
 
-## 📚 개발 가이드
+## 프로젝트 구조
 
-- **📋 프로젝트 요구사항 (PRD)**: `@/docs/PRD.md` - 견적서 시스템 상세 명세
-- **📁 프로젝트 구조**: `@/docs/guides/project-structure.md`
-- **🎨 스타일링 가이드**: `@/docs/guides/styling-guide.md`
-- **🧩 컴포넌트 패턴**: `@/docs/guides/component-patterns.md`
-- **⚡ Next.js 15.5.3 전문 가이드**: `@/docs/guides/nextjs-15.md`
-- **📝 폼 처리 완전 가이드**: `@/docs/guides/forms-react-hook-form.md`
-
-## ⚡ 자주 사용하는 명령어
-
-```bash
-# 개발
-npm run dev         # 개발 서버 실행 (Turbopack)
-npm run build       # 프로덕션 빌드
-npm run check-all   # 모든 검사 통합 실행 (권장)
-
-# UI 컴포넌트
-npx shadcn@latest add button    # 새 컴포넌트 추가
+```
+src/
+├── app/                    # App Router 페이지
+│   ├── layout.tsx         # 루트 레이아웃
+│   ├── page.tsx           # 홈 (Dashboard)
+│   ├── category/[slug]/   # 카테고리 페이지
+│   └── product/[id]/      # 상품 상세 페이지
+├── components/
+│   ├── ui/                # shadcn/ui 컴포넌트
+│   ├── layout/            # Header, Footer, MobileNav
+│   ├── product/           # 상품 카드, 그리드, 가격 등
+│   ├── category/          # 카테고리 카드, 그리드
+│   ├── search/            # 검색바, 정렬
+│   ├── sections/          # 홈 페이지 섹션
+│   └── common/            # 페이지네이션, 빈 상태
+├── lib/
+│   ├── services/          # Notion API 서비스 레이어
+│   ├── utils/             # 유틸리티 (product-parser)
+│   ├── constants.ts       # 카테고리, 정렬, 설정 상수
+│   ├── env.ts             # 환경변수 검증 (Zod)
+│   ├── format.ts          # 날짜, 통화, 할인율 포맷
+│   ├── logger.ts          # 구조화된 로깅
+│   └── notion.ts          # Notion API 클라이언트
+└── types/                 # TypeScript 타입 정의
 ```
 
-## ✅ 작업 완료 체크리스트
+## 자주 사용하는 명령어
+
+```bash
+npm run dev         # 개발 서버 실행 (Turbopack)
+npm run build       # 프로덕션 빌드
+npm run check-all   # typecheck + lint + format:check
+```
+
+## 작업 완료 체크리스트
 
 ```bash
 npm run check-all   # 모든 검사 통과 확인
 npm run build       # 빌드 성공 확인
 ```
 
-💡 **상세 규칙은 위 개발 가이드 문서들을 참조하세요**
+## 코딩 규칙
+
+- 2칸 들여쓰기, 작은따옴표
+- React 컴포넌트: PascalCase
+- 변수/함수: camelCase
+- 비동기: async/await + try-catch
+- 주석/커밋/문서: 한국어
+- Server Component 우선, Client는 최소한으로

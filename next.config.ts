@@ -5,6 +5,24 @@ const nextConfig: NextConfig = {
   compress: true,
   images: {
     formats: ['image/webp', 'image/avif'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'shop-phinf.pstatic.net',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.pstatic.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'prod-files-secure.s3.us-west-2.amazonaws.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.notion.so',
+      },
+    ],
   },
   experimental: {
     optimizePackageImports: ['lucide-react'],

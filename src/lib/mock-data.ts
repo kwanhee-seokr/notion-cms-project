@@ -1,86 +1,90 @@
 /**
- * 더미 데이터 생성 유틸리티
- * 개발 및 테스트 환경에서 사용할 샘플 견적서 데이터 생성
+ * 개발용 Mock 데이터
+ * Notion API 키가 설정되지 않았을 때 사용
  */
 
-import type { Invoice, InvoiceItem } from '@/types/invoice'
+import type { Product, ProductCategory, ProductTag } from '@/types/product'
+import { CATEGORIES } from './constants'
 
-/**
- * 더미 견적 항목 생성
- */
-function generateMockItems(): InvoiceItem[] {
-  return [
-    {
-      id: 'item-1',
-      description: '웹사이트 디자인',
-      quantity: 1,
-      unitPrice: 5000000,
-      amount: 5000000,
-    },
-    {
-      id: 'item-2',
-      description: '프론트엔드 개발',
-      quantity: 1,
-      unitPrice: 8000000,
-      amount: 8000000,
-    },
-    {
-      id: 'item-3',
-      description: '백엔드 API 개발',
-      quantity: 1,
-      unitPrice: 7000000,
-      amount: 7000000,
-    },
-    {
-      id: 'item-4',
-      description: '데이터베이스 설계',
-      quantity: 1,
-      unitPrice: 3000000,
-      amount: 3000000,
-    },
-    {
-      id: 'item-5',
-      description: '유지보수 (6개월)',
-      quantity: 6,
-      unitPrice: 500000,
-      amount: 3000000,
-    },
-  ]
-}
-
-/**
- * 더미 견적서 생성
- * @returns 샘플 견적서 데이터
- */
-export function generateMockInvoice(): Invoice {
-  const items = generateMockItems()
-  const totalAmount = items.reduce((sum, item) => sum + item.amount, 0)
+function createMockProduct(
+  id: number,
+  category: ProductCategory,
+  tags: ProductTag[] = []
+): Product {
+  const price = Math.floor(Math.random() * 50000) + 5000
+  const hasDiscount = Math.random() > 0.3
+  const salePrice = hasDiscount
+    ? Math.floor(price * (0.6 + Math.random() * 0.3))
+    : price
+  const discountRate =
+    hasDiscount && price > 0
+      ? Math.round(((price - salePrice) / price) * 100)
+      : 0
 
   return {
-    id: 'mock-invoice-001',
-    invoiceNumber: 'INV-2025-001',
-    clientName: 'ABC 주식회사',
-    issueDate: '2025-10-07',
-    validUntil: '2025-10-21',
-    items,
-    totalAmount,
-    status: 'pending',
+    id: `mock-${id}`,
+    title: `[${category}] 샘플 상품 ${id}`,
+    category,
+    price,
+    salePrice,
+    discountRate,
+    imageUrl: '',
+    storeLink: 'https://smartstore.naver.com/jangs-living',
+    published: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split('T')[0],
+    status: '발행됨',
+    tags,
+    shipping: Math.random() > 0.5 ? 3000 : 0,
+    freeShipping: Math.random() > 0.5,
+    todayShip: Math.random() > 0.7,
   }
 }
 
-/**
- * 여러 개의 더미 견적서 생성
- * @param count 생성할 견적서 개수
- * @returns 샘플 견적서 배열
- */
-export function generateMockInvoices(count: number): Invoice[] {
-  return Array.from({ length: count }, (_, index) => {
-    const invoice = generateMockInvoice()
-    return {
-      ...invoice,
-      id: `mock-invoice-${String(index + 1).padStart(3, '0')}`,
-      invoiceNumber: `INV-2025-${String(index + 1).padStart(3, '0')}`,
-      clientName: `클라이언트 ${index + 1}`,
-    }
+// 카테고리별 Mock 상품 생성
+let idCounter = 1
+export const MOCK_PRODUCTS: Product[] = CATEGORIES.flatMap(cat => {
+  const count = 8
+  return Array.from({ length: count }, (_, i) => {
+    const tags: ProductTag[] = []
+    if (i < 2) tags.push('BEST')
+    if (i >= 2 && i < 4) tags.push('NEW')
+    return createMockProduct(idCounter++, cat.name, tags)
   })
+})
+
+export function getMockProducts(
+  category?: ProductCategory,
+  query?: string,
+  pageSize: number = 12
+): { products: Product[]; nextCursor: string | null; hasMore: boolean } {
+  let filtered = MOCK_PRODUCTS
+
+  if (category) {
+    filtered = filtered.filter(p => p.category === category)
+  }
+
+  if (query) {
+    filtered = filtered.filter(p =>
+      p.title.toLowerCase().includes(query.toLowerCase())
+    )
+  }
+
+  const products = filtered.slice(0, pageSize)
+  return {
+    products,
+    nextCursor: filtered.length > pageSize ? 'mock-cursor' : null,
+    hasMore: filtered.length > pageSize,
+  }
+}
+
+export function getMockProductById(id: string): Product | undefined {
+  return MOCK_PRODUCTS.find(p => p.id === id)
+}
+
+export function getMockFeaturedProducts(
+  tag: ProductTag,
+  limit: number = 4
+): Product[] {
+  return MOCK_PRODUCTS.filter(p => p.tags.includes(tag)).slice(0, limit)
 }

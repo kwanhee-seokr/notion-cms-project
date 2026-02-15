@@ -1,18 +1,9 @@
 /**
  * 데이터 포맷 유틸리티
- * 날짜, 통화 등의 데이터를 사용자 친화적인 형식으로 변환
  */
 
 /**
  * 날짜를 한국어 형식으로 포맷
- * @param date ISO 8601 날짜 문자열 또는 Date 객체
- * @param format 포맷 타입 ('long' | 'short' | 'numeric')
- * @returns 포맷된 한국어 날짜 문자열
- *
- * @example
- * formatDate('2025-10-07') // "2025년 10월 7일"
- * formatDate('2025-10-07', 'short') // "2025. 10. 7."
- * formatDate('2025-10-07', 'numeric') // "2025-10-07"
  */
 export function formatDate(
   date: string | Date,
@@ -20,7 +11,6 @@ export function formatDate(
 ): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date
 
-  // 유효하지 않은 날짜 처리
   if (isNaN(dateObj.getTime())) {
     return '-'
   }
@@ -50,26 +40,16 @@ export function formatDate(
 
 /**
  * 금액을 한국 원화(KRW) 형식으로 포맷
- * @param amount 금액 (숫자)
- * @param options 추가 포맷 옵션
- * @returns 포맷된 원화 문자열
- *
- * @example
- * formatCurrency(1000000) // "₩1,000,000"
- * formatCurrency(1500000, { showSymbol: false }) // "1,500,000원"
  */
 export function formatCurrency(
   amount: number,
   options?: {
-    /** 통화 기호 표시 여부 (기본값: true) */
     showSymbol?: boolean
-    /** 원 단위 표시 여부 (기본값: false) */
     showWon?: boolean
   }
 ): string {
   const { showSymbol = true, showWon = false } = options || {}
 
-  // 숫자가 아닌 경우 처리
   if (isNaN(amount)) {
     return showSymbol ? '₩0' : '0원'
   }
@@ -88,34 +68,20 @@ export function formatCurrency(
 }
 
 /**
- * 견적서 상태를 한국어로 변환
- * @param status 견적서 상태
- * @returns 한국어 상태 텍스트
+ * 할인율 포맷
  */
-export function formatInvoiceStatus(
-  status: 'pending' | 'approved' | 'rejected'
-): string {
-  const statusMap = {
-    pending: '대기',
-    approved: '승인',
-    rejected: '거절',
-  }
-
-  return statusMap[status] || status
+export function formatDiscountRate(rate: number): string {
+  return `${rate}%`
 }
 
 /**
- * 파일명에 안전한 문자열로 변환
- * @param text 원본 텍스트
- * @returns 파일명에 사용 가능한 문자열
- *
- * @example
- * sanitizeFilename('견적서 #001 (2025.10.07)') // "견적서-001-2025-10-07"
+ * 배송비 포맷
  */
-export function sanitizeFilename(text: string): string {
-  return text
-    .replace(/[#()]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/\./g, '-')
-    .toLowerCase()
+export function formatShipping(
+  shipping: number,
+  freeShipping: boolean
+): string {
+  if (freeShipping) return '무료배송'
+  if (shipping === 0) return '무료배송'
+  return `배송비 ${new Intl.NumberFormat('ko-KR').format(shipping)}원`
 }

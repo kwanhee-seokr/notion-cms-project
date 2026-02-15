@@ -3,8 +3,10 @@ import { Geist_Mono, Noto_Sans_KR } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
+import { Header } from '@/components/layout/header'
+import { Footer } from '@/components/layout/footer'
+import { SITE_CONFIG } from '@/lib/constants'
 
-// 한글 폰트 최적화: Noto Sans KR (Google Fonts)
 const notoSansKR = Noto_Sans_KR({
   subsets: ['latin'],
   display: 'swap',
@@ -20,9 +22,11 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: '견적서 조회 시스템',
-  description:
-    '노션 기반 견적서 관리 시스템 - 웹에서 견적서를 확인하고 PDF로 다운로드하세요',
+  title: {
+    default: `${SITE_CONFIG.NAME} - ${SITE_CONFIG.SLOGAN}`,
+    template: `%s | ${SITE_CONFIG.NAME}`,
+  },
+  description: `${SITE_CONFIG.NAME} - 네이버 스마트스토어에서 엄선한 생활용품을 만나보세요.`,
 }
 
 export default function RootLayout({
@@ -39,7 +43,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
           <Toaster />
         </ThemeProvider>
       </body>

@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { CATEGORY_TO_SLUG, REVALIDATE, SITE_CONFIG } from '@/lib/constants'
+import { CATEGORY_TO_SLUG, SITE_CONFIG } from '@/lib/constants'
 import { formatShipping } from '@/lib/format'
 import {
   getProductById,
@@ -20,7 +20,7 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 
-export const revalidate = REVALIDATE.PRODUCT
+export const revalidate = 60 // 1분
 
 interface PageProps {
   params: Promise<{ id: string }>

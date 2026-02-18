@@ -29,7 +29,7 @@ function createMockProduct(
     salePrice,
     discountRate,
     imageUrl: '',
-    storeLink: 'https://smartstore.naver.com/jangs-living',
+    storeLink: 'https://smartstore.naver.com/jangsliving',
     published: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000)
       .toISOString()
       .split('T')[0],

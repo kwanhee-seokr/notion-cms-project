@@ -1,12 +1,7 @@
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import {
-  CATEGORIES,
-  REVALIDATE,
-  SLUG_TO_CATEGORY,
-  SITE_CONFIG,
-} from '@/lib/constants'
+import { CATEGORIES, SLUG_TO_CATEGORY, SITE_CONFIG } from '@/lib/constants'
 import { getProducts } from '@/lib/services/product.service'
 import type { ProductCategory, ProductSortOption } from '@/types/product'
 import { ProductGrid } from '@/components/product/product-grid'
@@ -14,7 +9,7 @@ import { SearchSortBar } from '@/components/search/search-sort-bar'
 import { Pagination } from '@/components/common/pagination'
 import { EmptyState } from '@/components/common/empty-state'
 
-export const revalidate = REVALIDATE.CATEGORY
+export const revalidate = 180 // 3분
 
 interface PageProps {
   params: Promise<{ slug: string }>

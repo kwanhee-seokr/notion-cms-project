@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { CATEGORIES, PAGINATION, REVALIDATE } from '@/lib/constants'
+import { CATEGORIES, PAGINATION } from '@/lib/constants'
 import {
   getFeaturedProducts,
   getCategoryPreviewProducts,
@@ -10,7 +10,7 @@ import { CategoryPreview } from '@/components/sections/category-preview'
 import { CategoryGrid } from '@/components/category/category-grid'
 import { SearchBar } from '@/components/search/search-bar'
 
-export const revalidate = REVALIDATE.HOME
+export const revalidate = 300 // 5분
 
 export default async function HomePage() {
   // 병렬 데이터 페칭

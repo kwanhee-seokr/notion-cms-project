@@ -11,9 +11,11 @@ import {
 
 interface ProductCardProps {
   product: Product
+  // LCP 이미지 우선 로딩 (첫 번째 카드에 사용)
+  priority?: boolean
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, priority = false }: ProductCardProps) {
   return (
     <Card className="group overflow-hidden transition-shadow hover:shadow-md">
       <Link href={`/product/${product.id}`}>
@@ -26,6 +28,7 @@ export function ProductCard({ product }: ProductCardProps) {
               fill
               className="object-cover transition-transform group-hover:scale-105"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              priority={priority}
             />
           ) : (
             <div className="flex h-full items-center justify-center">

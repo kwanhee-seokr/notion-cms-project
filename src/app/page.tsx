@@ -41,8 +41,12 @@ export default async function HomePage() {
         <CategoryGrid />
       </section>
 
-      {/* BEST 상품 */}
-      <FeaturedProducts title="BEST 상품" products={bestProducts} />
+      {/* BEST 상품 (최상단 노출 - 첫 번째 이미지 LCP 우선 로딩) */}
+      <FeaturedProducts
+        title="BEST 상품"
+        products={bestProducts}
+        prioritizeFirst
+      />
 
       {/* NEW 상품 */}
       <FeaturedProducts title="NEW 상품" products={newProducts} />

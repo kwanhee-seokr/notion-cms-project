@@ -8,6 +8,8 @@ import type { CategoryInfo, ProductSortOption } from '@/types/product'
 export const SITE_CONFIG = {
   NAME: 'Jangs 리빙',
   SLOGAN: '생활의 품격을 높이는 스마트한 선택',
+  DESCRIPTION:
+    'Jangs 리빙 스마트스토어에서 엄선한 가구, 생활용품, 패션잡화, 화장품 등 다양한 상품을 만나보세요.',
   STORE_URL: 'https://smartstore.naver.com/jangsliving',
 } as const
 

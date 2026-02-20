@@ -34,9 +34,25 @@ export async function generateMetadata({
     return { title: '카테고리를 찾을 수 없습니다' }
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+  const pageUrl = `${baseUrl}/category/${slug}`
+  const description = `${SITE_CONFIG.NAME}의 ${categoryName} 카테고리 상품을 만나보세요.`
+
   return {
-    title: `${categoryName}`,
-    description: `${SITE_CONFIG.NAME}의 ${categoryName} 카테고리 상품을 만나보세요.`,
+    title: categoryName,
+    description,
+    alternates: { canonical: pageUrl },
+    openGraph: {
+      title: `${categoryName} | ${SITE_CONFIG.NAME}`,
+      description,
+      url: pageUrl,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${categoryName} | ${SITE_CONFIG.NAME}`,
+      description,
+    },
   }
 }
 
@@ -59,8 +75,36 @@ export default async function CategoryPage({
     startCursor: cursor,
   })
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+
+  // BreadcrumbList JSON-LD
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: '홈',
+        item: baseUrl,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: categoryName,
+        item: `${baseUrl}/category/${slug}`,
+      },
+    ],
+  }
+
   return (
     <div className="container mx-auto space-y-6 px-4 py-8">
+      {/* BreadcrumbList 구조화 데이터 */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+
       <div>
         <h1 className="text-2xl font-bold">{categoryName}</h1>
         <p className="text-muted-foreground text-sm">

@@ -33,11 +33,27 @@ export async function generateMetadata({
 
   try {
     const product = await getProductById(id)
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+    const pageUrl = `${baseUrl}/product/${id}`
+    const description = `${product.title} - ${SITE_CONFIG.NAME}에서 확인하세요.`
+
     return {
       title: product.title,
-      description: `${product.title} - ${SITE_CONFIG.NAME}에서 확인하세요.`,
+      description,
+      alternates: { canonical: pageUrl },
       openGraph: {
-        title: product.title,
+        title: `${product.title} | ${SITE_CONFIG.NAME}`,
+        description,
+        url: pageUrl,
+        type: 'website',
+        images: product.imageUrl
+          ? [{ url: product.imageUrl, alt: product.title }]
+          : [],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${product.title} | ${SITE_CONFIG.NAME}`,
+        description,
         images: product.imageUrl ? [product.imageUrl] : [],
       },
     }
@@ -59,9 +75,65 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const relatedProducts = await getRelatedProducts(product.category, product.id)
 
   const categorySlug = CATEGORY_TO_SLUG[product.category]
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+
+  // Product JSON-LD
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.title,
+    image: product.imageUrl || undefined,
+    brand: {
+      '@type': 'Brand',
+      name: SITE_CONFIG.NAME,
+    },
+    offers: {
+      '@type': 'Offer',
+      url: product.storeLink,
+      priceCurrency: 'KRW',
+      price: product.salePrice ?? product.price,
+      availability: 'https://schema.org/InStock',
+    },
+  }
+
+  // BreadcrumbList JSON-LD
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: '홈',
+        item: baseUrl,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: product.category,
+        item: `${baseUrl}/category/${categorySlug}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: product.title,
+        item: `${baseUrl}/product/${id}`,
+      },
+    ],
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* 구조화 데이터 */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+
       {/* 브레드크럼 */}
       <nav className="text-muted-foreground mb-6 text-sm">
         <Link href="/" className="hover:text-foreground">

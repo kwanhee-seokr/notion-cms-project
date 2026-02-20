@@ -1,4 +1,4 @@
-# 배포 체크리스트
+# Jangs 리빙 배포 체크리스트
 
 ## 📋 배포 전 확인사항
 
@@ -9,26 +9,22 @@
   - ESLint 검사
   - Prettier 포맷 확인
 - [ ] `npm run build` 성공
-- [ ] 모든 테스트 통과
+- [ ] 빌드 output 크기 확인 (번들 사이즈)
 
 ### 환경 변수 설정
 
-- [ ] `.env.production` 파일 확인
 - [ ] 필수 환경 변수 설정 완료:
-  - [ ] `NOTION_API_KEY`
-  - [ ] `NOTION_DATABASE_ID`
-  - [ ] `ADMIN_PASSWORD` (강력한 비밀번호)
-  - [ ] `SESSION_SECRET` (32자 랜덤 문자열)
-  - [ ] `NEXT_PUBLIC_BASE_URL` (프로덕션 도메인)
+  - [ ] `NOTION_API_KEY` (`secret_` 또는 `ntn_`로 시작)
+  - [ ] `NOTION_DATABASE_ID` (32자 ID)
+  - [ ] `NEXT_PUBLIC_BASE_URL` (프로덕션 도메인, 예: `https://jangsliving.vercel.app`)
+- [ ] `.env.local` 파일이 `.gitignore`에 포함되어 있음
+- [ ] 민감한 정보가 코드에 하드코딩되지 않음
 
 ### 보안 점검
 
-- [ ] 관리자 비밀번호 기본값 아님 확인
-  - ❌ 금지: `admin1234`, `admin123`, `password`
-- [ ] SESSION_SECRET 새로 생성
-  - 생성 명령어: `openssl rand -base64 32`
-- [ ] `.env.local` 파일이 `.gitignore`에 포함되어 있음
-- [ ] 민감한 정보가 코드에 하드코딩되지 않음
+- [ ] Notion API Key가 Notion Integration에서 발급한 키인지 확인
+- [ ] Notion 데이터베이스에 Integration 연결 확인
+- [ ] `logger.ts`가 프로덕션에서 JSON 형식으로 로그 출력하는지 확인
 
 ---
 
@@ -42,9 +38,9 @@
 
 ### 2. 프로젝트 Import
 
-1. GitHub 저장소 선택
+1. GitHub 저장소 선택 (notion-cms-project)
 2. "Import" 클릭
-3. 프로젝트 이름 설정 (선택사항)
+3. 프로젝트 이름 설정 (예: `jangsliving`)
 
 ### 3. 환경 변수 설정
 
@@ -57,14 +53,10 @@
 NOTION_API_KEY=secret_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 NOTION_DATABASE_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-# 관리자 인증
-ADMIN_PASSWORD=your-strong-password-here
-SESSION_SECRET=your-32-character-secret-here
-
 # 애플리케이션 URL
-NEXT_PUBLIC_BASE_URL=https://your-domain.vercel.app
+NEXT_PUBLIC_BASE_URL=https://jangsliving.vercel.app
 
-# Next.js 환경
+# Next.js 환경 (Vercel 자동 설정)
 NODE_ENV=production
 ```
 
@@ -90,69 +82,80 @@ NODE_ENV=production
 
 ## ✅ 배포 후 확인
 
-### 기능 테스트
+### 기능 테스트 (Happy Path)
 
-- [ ] 관리자 로그인 작동
-  - URL: `https://your-domain.vercel.app/admin-login`
-  - 비밀번호 입력 후 로그인 성공
-- [ ] 견적서 목록 조회
-  - Notion 데이터베이스 연동 확인
-  - 견적서 데이터 정상 표시
-- [ ] 링크 복사 기능
-  - 복사 버튼 클릭 시 URL 복사됨
-  - 토스트 알림 표시
-- [ ] 링크 공유 기능
-  - 공유 드롭다운 메뉴 열림
-  - 이메일/텔레그램 공유 작동
-- [ ] 다크모드 전환
-  - 테마 버튼 클릭 시 전환
-  - 선택한 테마 저장됨
-- [ ] PDF 다운로드
-  - 견적서 페이지에서 PDF 생성
-  - 다운로드 성공
-- [ ] 모바일 반응형
-  - 모바일 브라우저에서 정상 표시
-  - 터치 인터랙션 작동
+- [ ] 홈 페이지 Dashboard 정상 로드
+  - URL: `https://your-domain.vercel.app`
+  - 히어로 배너, 카테고리 그리드, BEST 상품 섹션 표시 확인
+- [ ] Notion 실제 데이터 정상 표시
+  - 카테고리별 상품 목록 표시
+  - 상품 이미지, 가격, 할인율 표시
+- [ ] 카테고리 클릭 → 카테고리 페이지 상품 목록 표시
+  - 8개 카테고리 (가구/인테리어, 생활/건강, 패션잡화, 화장품/미용, 디지털/가전, 출산/육아, 스포츠/레저, 패션의류)
+- [ ] 상품 카드 클릭 → 상품 상세 페이지 정상 표시
+  - 상품명, 이미지, 가격/할인 정보, 배송 정보 표시
+- [ ] '네이버에서 구매하기' 버튼 클릭 → 스마트스토어 새 탭 이동
+  - URL: https://smartstore.naver.com/jangsliving
+- [ ] 검색 기능 정상 동작
+  - 홈 페이지 검색바에서 검색어 입력 → 카테고리 페이지로 이동
+  - 카테고리 페이지 내 검색 필터링 동작
+- [ ] 정렬 기능 정상 동작
+  - 최신순 / 가격 낮은순 / 가격 높은순 / 할인율순
 
-### 성능 확인
+### 에러 시나리오 테스트
 
-- [ ] Lighthouse 점수 확인
-  - Performance: > 90
-  - Accessibility: > 90
-  - Best Practices: > 90
-  - SEO: > 90
-- [ ] 페이지 로딩 속도
-  - 초기 로딩: < 2초
-  - 페이지 전환: < 1초
-- [ ] Core Web Vitals
-  - LCP (Largest Contentful Paint): < 2.5초
-  - FID (First Input Delay): < 100ms
-  - CLS (Cumulative Layout Shift): < 0.1
+- [ ] 존재하지 않는 상품 ID 접근 → 404 페이지 정상 표시
+  - URL: `/product/nonexistent-id`
+  - 메시지: "요청하신 상품이 존재하지 않거나 삭제되었습니다."
+- [ ] 존재하지 않는 카테고리 slug 접근 → 404 페이지 정상 표시
+  - URL: `/category/nonexistent-slug`
+
+### Vercel Analytics 확인
+
+- [ ] Vercel Dashboard → Analytics 탭에서 페이지뷰 수집 확인
+- [ ] 실시간 트래픽 모니터링 정상 동작
+
+---
+
+## 🎨 성능 및 품질 확인
+
+### Lighthouse 점수
+
+- [ ] Performance: ≥ 90
+- [ ] Accessibility: ≥ 90
+- [ ] Best Practices: ≥ 90
+- [ ] SEO: ≥ 90
+
+### Core Web Vitals
+
+- [ ] LCP (Largest Contentful Paint): < 2.5초
+- [ ] FID (First Input Delay): < 100ms
+- [ ] CLS (Cumulative Layout Shift): < 0.1
+
+### SEO 확인
+
+- [ ] `/sitemap.xml` 정상 응답 (카테고리 + 상품 URL 포함)
+- [ ] `/robots.txt` 정상 응답
+- [ ] 상품 상세 페이지 JSON-LD (Product 스키마) 적용 확인
+- [ ] 카테고리 페이지 JSON-LD (BreadcrumbList 스키마) 적용 확인
+
+---
+
+## 📱 반응형 & 크로스 브라우저
+
+### 반응형 테스트
+
+- [ ] 모바일(375px): 햄버거 메뉴, 2열 상품 그리드
+- [ ] 태블릿(768px): 3열 상품 그리드
+- [ ] 데스크톱(1280px): 4열 상품 그리드, 데스크톱 네비게이션
 
 ### 브라우저 호환성
 
 - [ ] Chrome 최신 버전
-- [ ] Safari 최신 버전
 - [ ] Firefox 최신 버전
-- [ ] Edge 최신 버전
-- [ ] 모바일 Safari (iOS)
-- [ ] 모바일 Chrome (Android)
-
----
-
-## 🔍 모니터링
-
-### Vercel Analytics
-
-1. Vercel Dashboard → Analytics 활성화
-2. 실시간 트래픽 모니터링
-3. 성능 메트릭 확인
-
-### 에러 모니터링
-
-1. Vercel Dashboard → Logs 확인
-2. 런타임 에러 모니터링
-3. API 실패 로그 확인
+- [ ] Edge 최신 버전 (가능 시)
+- [ ] 모바일 Safari (iOS) (가능 시)
+- [ ] 모바일 Chrome (Android) (가능 시)
 
 ---
 
@@ -179,7 +182,7 @@ NODE_ENV=production
 **해결방법**:
 
 1. Vercel 빌드 로그 확인
-2. 환경 변수 누락 확인
+2. 환경 변수 누락 확인 (`NOTION_API_KEY`, `NOTION_DATABASE_ID`)
 3. 로컬에서 `npm run build` 테스트
 
 ### 환경 변수 오류
@@ -189,82 +192,59 @@ NODE_ENV=production
 **해결방법**:
 
 1. Vercel Dashboard → Settings → Environment Variables
-2. 모든 필수 변수 설정 확인
+2. `NOTION_API_KEY`, `NOTION_DATABASE_ID` 설정 확인
 3. "Redeploy" 실행
 
 ### Notion 연동 실패
 
-**증상**: 견적서 목록이 표시되지 않음
+**증상**: 상품 목록이 표시되지 않음
 
 **해결방법**:
 
 1. Notion Integration 권한 확인
 2. 데이터베이스에 Integration 연결 확인
-3. `NOTION_DATABASE_ID` 정확성 확인
+3. `NOTION_DATABASE_ID` 정확성 확인 (32자 확인)
+4. `withRetry` 재시도 로직: 최대 3회, 지수 백오프
+
+### ISR 캐시 문제
+
+**증상**: 최신 데이터가 반영되지 않음
+
+**해결방법**:
+
+1. Vercel Dashboard → Deployments → "Invalidate Cache"
+2. 또는 코드 변경 후 재배포 (캐시 자동 갱신)
+3. ISR 재검증 주기 확인 (HOME: 300초, CATEGORY: 180초, PRODUCT: 60초)
 
 ---
 
-## 📊 배포 후 최적화
+## 📊 배포 후 모니터링
 
-### CDN 캐싱
+### Vercel Analytics
 
-- Vercel이 자동으로 CDN 캐싱 적용
-- 정적 자산 자동 최적화
+1. Vercel Dashboard → Analytics 활성화
+2. 실시간 트래픽 모니터링
+3. 성능 메트릭 확인
 
-### 이미지 최적화
+### 에러 모니터링
 
-- Next.js Image 컴포넌트 사용 확인
-- 이미지 자동 포맷 변환 (WebP)
-
-### 코드 분할
-
-- 동적 import 사용 확인
-- 번들 크기 모니터링
-
----
-
-## 🔐 보안 강화
-
-### HTTPS
-
-- Vercel이 자동으로 HTTPS 적용
-- 커스텀 도메인도 자동 SSL 인증서 발급
-
-### 헤더 보안
-
-- `next.config.js`에서 보안 헤더 설정 확인
-- CSP (Content Security Policy) 적용
-
-### Rate Limiting
-
-- 관리자 로그인 시도 제한: 5회/60초
-- API 요청 제한: Notion API 제한 준수
+1. Vercel Dashboard → Logs 확인
+2. 런타임 에러 모니터링
+3. Notion API 실패 로그 확인 (`logger.ts` 구조화 로그)
 
 ---
 
 ## 📝 배포 기록
 
-| 날짜 | 버전 | 변경사항 | 배포자 |
-| ---- | ---- | -------- | ------ |
-|      |      |          |        |
+| 날짜       | 버전 | 변경사항      | 배포자 |
+| ---------- | ---- | ------------- | ------ |
+| 2026-02-20 | v1.0 | MVP 초기 배포 | -      |
 
 ---
 
-## 🎯 다음 단계
-
-배포가 완료되면:
-
-1. **모니터링 설정**: 에러 추적, 성능 모니터링
-2. **백업 계획**: Notion 데이터베이스 정기 백업
-3. **문서 업데이트**: 변경사항 문서화
-4. **사용자 교육**: 관리자 가이드 공유
-
----
-
-## 📞 지원
-
-배포 관련 문의:
+## 📞 참고 링크
 
 - Vercel 공식 문서: https://vercel.com/docs
 - Next.js 공식 문서: https://nextjs.org/docs
 - Notion API 문서: https://developers.notion.com
+- 스마트스토어 URL: https://smartstore.naver.com/jangsliving

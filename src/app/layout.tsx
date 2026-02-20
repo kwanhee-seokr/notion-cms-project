@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Geist_Mono, Noto_Sans_KR } from 'next/font/google'
 import './globals.css'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
 import { Header } from '@/components/layout/header'
@@ -22,11 +24,26 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+  ),
   title: {
     default: `${SITE_CONFIG.NAME} - ${SITE_CONFIG.SLOGAN}`,
     template: `%s | ${SITE_CONFIG.NAME}`,
   },
-  description: `${SITE_CONFIG.NAME} - 네이버 스마트스토어에서 엄선한 생활용품을 만나보세요.`,
+  description: SITE_CONFIG.DESCRIPTION,
+  openGraph: {
+    type: 'website',
+    siteName: SITE_CONFIG.NAME,
+    title: `${SITE_CONFIG.NAME} - ${SITE_CONFIG.SLOGAN}`,
+    description: SITE_CONFIG.DESCRIPTION,
+    locale: 'ko_KR',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${SITE_CONFIG.NAME} - ${SITE_CONFIG.SLOGAN}`,
+    description: SITE_CONFIG.DESCRIPTION,
+  },
 }
 
 export default function RootLayout({
@@ -50,6 +67,8 @@ export default function RootLayout({
           </div>
           <Toaster />
         </ThemeProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

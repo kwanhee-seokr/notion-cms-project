@@ -50,7 +50,7 @@ Jangs 리빙 스마트스토어 홍보 사이트는 일반 소비자 및 잠재 
 ### Phase 1: 애플리케이션 골격 구축 ✅
 
 - **Task 001: 프로젝트 초기 설정 및 환경 구성** ✅ - 완료
-  - Next.js 15.5.3 (App Router + Turbopack) 프로젝트 설정
+  - Next.js 15.5.12 (App Router + Turbopack) 프로젝트 설정 (CVE-2025-66478 보안 패치 적용)
   - TypeScript 5, TailwindCSS v4, shadcn/ui (new-york style) 구성
   - ESLint + Prettier + Husky + lint-staged 개발 도구 설정
   - 환경 변수 검증 (Zod 기반 env.ts, NOTION_API_KEY, NOTION_DATABASE_ID)
@@ -268,7 +268,7 @@ Phase 4: 최적화/배포
   - [x] Happy Path: 정상 동작 시나리오가 모두 포함되었는가?
   - [x] 에러 핸들링: 네트워크 오류, 잘못된 입력, 서버 에러 시나리오가 있는가?
   - [x] 경계값: 빈 데이터, 대량 데이터, 특수문자 등 엣지 케이스가 고려되었는가?
-  - [ ] 성능: 응답 시간 및 렌더링 성능 기준이 정의되었는가?
+  - [x] 성능: 응답 시간 및 렌더링 성능 기준이 정의되었는가?
 - [x] 구현 완료 후 테스트 미수행 Task가 없는지 확인했는가?
 - [x] Playwright MCP 테스트 결과가 작업 파일에 기록되었는가?
 
@@ -322,8 +322,8 @@ Phase 4: 최적화/배포
 
 ---
 
-**문서 버전**: v1.2
+**문서 버전**: v1.3
 **작성일**: 2026-02-15
 **최종 업데이트**: 2026-02-20
 **목표**: MVP 핵심 기능 구현을 통한 빠른 상품 홍보 시작
-**진행 상황**: Phase 1-4 완료 - MVP 개발 완료 🎉 (14/14 Tasks 완료)
+**진행 상황**: Phase 1-4 완료 - MVP 개발 및 Vercel 배포 완료 🎉 (14/14 Tasks 완료, 모든 체크리스트 통과)
